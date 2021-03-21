@@ -1,0 +1,1 @@
+{ "dirs" : [ "src/ocaml" ] , "pkgs" : [ [ "gentype" , "/home/yago/Prog/Web/chrysto/node_modules/gentype" ] ] , "generated" : [] }

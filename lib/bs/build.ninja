@@ -1,0 +1,24 @@
+rescript = 1
+cleaner = /home/yago/Prog/Web/chrysto/node_modules/gentype/gentype.exe
+rule ast
+  command = /usr/local/lib/node_modules/bs-platform/linux/bsc.exe  -bs-v 9.0.2  -absname -bs-ast -o $out $i
+o src/ocaml/test.ast : ast ../../src/ocaml/test.ml
+rule deps
+  command = /usr/local/lib/node_modules/bs-platform/linux/bsb_helper.exe -hash 2c4f64646dc3be9f569e00052cba9438 -bs-ns Chrysto $in
+  restat = 1
+o src/ocaml/test.d : deps src/ocaml/test.ast src/ocaml/test.iast
+o src/ocaml/test.iast : ast ../../src/ocaml/test.mli
+rule mi
+  command = /usr/local/lib/node_modules/bs-platform/linux/bsc.exe -bs-ns Chrysto -I . -I src/ocaml   -bs-gentype /home/yago/Prog/Web/chrysto/node_modules/gentype/gentype.exe $i
+  dyndep = 1
+  restat = 1
+o src/ocaml/test-Chrysto.cmi : mi src/ocaml/test.iast
+rule mj
+  command = /usr/local/lib/node_modules/bs-platform/linux/bsc.exe -bs-ns Chrysto -bs-read-cmi -I . -I src/ocaml   -bs-gentype /home/yago/Prog/Web/chrysto/node_modules/gentype/gentype.exe -bs-package-name chrysto -bs-package-output es6-global:$in_d:.bs.js $i
+  dyndep = 1
+  restat = 1
+o src/ocaml/test-Chrysto.cmj ../../src/ocaml/test.bs.js : mj src/ocaml/test.ast src/ocaml/test-Chrysto.cmi
+rule build_package
+  command = /usr/local/lib/node_modules/bs-platform/linux/bsc.exe -w -49 -color always -no-alias-deps  $i
+  restat = 1
+o Chrysto.cmi : build_package Chrysto.mlmap

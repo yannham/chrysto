@@ -1,0 +1,10 @@
+####{BSB GENERATED: NO EDIT
+B lib/bs
+FLG -open Chrysto
+FLG -ppx '/usr/local/lib/node_modules/bs-platform/linux/bsc.exe -as-ppx '
+S /usr/local/lib/node_modules/bs-platform/lib/ocaml
+B /usr/local/lib/node_modules/bs-platform/lib/ocaml
+FLG -w +a-4-9-20-40-41-42-50-61-102
+S src/ocaml
+B lib/bs/src/ocaml
+####BSB GENERATED: NO EDIT}
