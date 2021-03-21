@@ -22,14 +22,15 @@
 
           buildInputs = [
             pkgs.bs-platform
+            pkgs.nodePackages.npm
+            pkgs.nodePackages.webpack
             pkgs.nodePackages.vue-cli ];
 
           src = if isShell then null else self;
 
           buildPhase = "bsb -make-wolrd && vue-cli-service build";
-          doCheck = false;
         };
-      
+
     in rec {
       defaultPackage = forAllSystems (system: packages."${system}".build);
       devShell = forAllSystems (system: buildChrysto { inherit system; isShell =
