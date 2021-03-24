@@ -1,7 +1,7 @@
 {
   "name": "chrysto",
   "version": "1.0.0",
-  "description": "A Vue.js project",
+  "description": "Pedagogical support for a talk on the history of cryptography",
   "author": "Yann Hamdaoui <yann.hamdaoui@gmail.com>",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "bs-platform": "^9.0.2",
     "gentype": "^3.44.0",
     "vue": "^2.5.2"
   },

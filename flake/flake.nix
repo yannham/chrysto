@@ -1,7 +1,7 @@
 {
   inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, nodejs ? pkgs."nodejs-12_x" }:
     let
       SYSTEMS = ["x86_64-linux"];
 
@@ -11,24 +11,34 @@
 
       forAllSystems = f: genAttrs SYSTEMS (system: f system);
 
+      nodeEnv = import ./node-env.nix {
+        inherit (pkgs) stdenv lib python2 runCommand writeTextFile;
+        inherit pkgs nodejs;
+        libtool = if pkgs.stdenv.isDarwin then pkgs.darwin.cctools else null;
+      };
+
       buildChrysto = { system, isShell ? false }:
         let
           pkgs = import nixpkgs {
             inherit system;
           };
+        nodePackages = import ./node-packages.nix {
+          inherit (pkgs) fetchurl nix-gitignore stdenv lib fetchgit;
+          inherit nodeEnv;
+        }
 
         in pkgs.stdenv.mkDerivation {
           name = "chrysto-${version}";
 
           buildInputs = [
-            pkgs.bs-platform
-            pkgs.nodePackages.npm
-            pkgs.nodePackages.webpack
+            pkgs.nodejs
+            pkgs.python2
             pkgs.nodePackages.vue-cli ];
 
           src = if isShell then null else self;
 
-          buildPhase = "bsb -make-wolrd && vue-cli-service build";
+          buildPhase = "bsb -make-world && vue build";
+          installPhase = "mkdir -p $out; cp -r ./* $out;";
         };
 
     in rec {
