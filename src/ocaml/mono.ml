@@ -30,6 +30,8 @@ let subst_from_key key =
       ()) found;
   Buffer.contents buffer
 
+let key_of_subst subst = subst
+
 let encode_char subst c =
   if is_uppercase c then
     match index (Char.lowercase_ascii c) with

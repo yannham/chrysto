@@ -7,49 +7,24 @@ import * as $$Buffer from "../../../../../../../usr/local/lib/node_modules/bs-pl
 import * as $$String from "../../../../../../../usr/local/lib/node_modules/bs-platform/lib/es6/string.js";
 import * as Caml_array from "../../../../../../../usr/local/lib/node_modules/bs-platform/lib/es6/caml_array.js";
 import * as Caml_bytes from "../../../../../../../usr/local/lib/node_modules/bs-platform/lib/es6/caml_bytes.js";
-import * as Pervasives from "../../../../../../../usr/local/lib/node_modules/bs-platform/lib/es6/pervasives.js";
-import * as Caml_option from "../../../../../../../usr/local/lib/node_modules/bs-platform/lib/es6/caml_option.js";
 import * as Caml_string from "../../../../../../../usr/local/lib/node_modules/bs-platform/lib/es6/caml_string.js";
-
-function index(c) {
-  var diff = c - /* 'a' */97 | 0;
-  if (diff >= 0 && diff < 24) {
-    return diff;
-  }
-  
-}
-
-function unwrap(v) {
-  if (v !== undefined) {
-    return Caml_option.valFromOption(v);
-  } else {
-    return Pervasives.failwith("unwrap");
-  }
-}
-
-function is_uppercase(c) {
-  if (c >= /* 'A' */65) {
-    return c <= /* 'Z' */90;
-  } else {
-    return false;
-  }
-}
+import * as Utils$Chrysto from "./utils.bs.js";
 
 function inv(subst) {
-  var buffer = Caml_bytes.caml_create_bytes(24);
+  var buffer = Caml_bytes.caml_create_bytes(26);
   $$String.iteri((function (i, c) {
-          var rev_index = unwrap(index(c));
-          return Caml_bytes.set(buffer, rev_index, Char.chr(/* 'a' */97 + i | 0));
+          var rev_index = Utils$Chrysto.unwrap(Utils$Chrysto.index(c));
+          return Caml_bytes.set(buffer, rev_index, Utils$Chrysto.from_index(i));
         }), subst);
   return Bytes.to_string(buffer);
 }
 
 function subst_from_key(key) {
   var key$1 = $$String.lowercase_ascii(key);
-  var buffer = $$Buffer.create(24);
-  var found = Caml_array.caml_make_vect(24, false);
+  var buffer = $$Buffer.create(26);
+  var found = Caml_array.caml_make_vect(26, false);
   $$String.iter((function (c) {
-          var i = index(c);
+          var i = Utils$Chrysto.index(c);
           if (i === undefined) {
             return ;
           }
@@ -64,7 +39,7 @@ function subst_from_key(key) {
                 RE_EXN_ID: "Assert_failure",
                 _1: [
                   "mono.ml",
-                  36,
+                  23,
                   13
                 ],
                 Error: new Error()
@@ -72,7 +47,7 @@ function subst_from_key(key) {
         }), key$1);
   $$Array.iteri((function (index, added) {
           if (!added) {
-            return $$Buffer.add_char(buffer, Char.chr(/* 'a' */97 + index | 0));
+            return $$Buffer.add_char(buffer, Utils$Chrysto.from_index(index));
           }
           
         }), found);
@@ -80,8 +55,8 @@ function subst_from_key(key) {
 }
 
 function encode_char(subst, c) {
-  if (is_uppercase(c)) {
-    var i = index(c);
+  if (Utils$Chrysto.is_uppercase(c)) {
+    var i = Utils$Chrysto.index(Char.lowercase_ascii(c));
     if (i !== undefined) {
       return Char.uppercase_ascii(Caml_string.get(subst, i));
     }
@@ -89,13 +64,13 @@ function encode_char(subst, c) {
           RE_EXN_ID: "Assert_failure",
           _1: [
             "mono.ml",
-            50,
+            37,
             16
           ],
           Error: new Error()
         };
   }
-  var i$1 = index(c);
+  var i$1 = Utils$Chrysto.index(c);
   if (i$1 !== undefined) {
     return Caml_string.get(subst, i$1);
   } else {
