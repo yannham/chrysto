@@ -10,8 +10,10 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "bootstrap": "^4.6.0",
     "bs-platform": "^9.0.2",
     "gentype": "^3.44.0",
+    "jquery": "^3.6.0",
     "vue": "^2.5.2"
   },
   "devDependencies": {
