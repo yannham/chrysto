@@ -35,7 +35,8 @@
             <td v-for="i in 26" :key="i" :class="{currentInvChar: currentInvChar === (i-1)}">{{ String.fromCharCode(64 + i)}}</td>
           </tr>
           <tr>
-            <td v-for="i in 26" :key="i" :class="{currentInvChar: currentInvChar === (i-1)}">{{ InvSubst.charAt(i-1).toUpperCase() }}</td>
+            <td v-for="i in 26" :key="i" :class="{currentInvChar: currentInvChar === (i-1)}">{{
+              invSubst.charAt(i-1).toUpperCase() }}</td>
           </tr>
           </tbody>
         </table>
@@ -53,11 +54,24 @@
 <script>
 import * as Mono from '../ocaml/mono.bs'
 
+/**
+ * Take index of a character in the alphabet between 0 and 23, and find the index of the corresponding character in a substitution represented as a string of length 26.
+ * Return null if no index has been found.
+ */
+function findIndexOfChar(subst, code) {
+  for (let i = 0; i < subst.length; i++) {
+    if(subst.charCodeAt(i) - 97 === code) {
+      return i;
+    }
+  }
+
+  return null;
+}
+
 export default {
-  name: 'Chrysto',
+  name: 'ChrystoMono',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       secretKey: "bonjour les amis",
       clearText: '',
       clearInvText: '',
@@ -69,32 +83,40 @@ export default {
     subst() {
       return Mono.subst_from_key(this.secretKey)
     },
-    InvSubst() {
+    invSubst() {
       return Mono.inv(this.subst)
     },
     cipherText() {
       return Mono.encode(this.subst, this.clearText)
     },
     cipherInvText() {
-      return Mono.encode(this.InvSubst, this.clearInvText)
+      return Mono.encode(this.invSubst, this.clearInvText)
     }
   },
   methods: {
-    updateCurrentChar_(e, prop) {
+    updateCurrentChar_(e, setter) {
       const code = e.keyCode;
 
       if(code >= 97 && code <= 122) {
-        this[prop] = code - 97;
+        setter(code - 97);
       }
       if(code >= 65 && code <= 90) {
-        this[prop] = code - 65;
+        setter(code - 65);
       }
     },
     updateCurrentChar(e) {
-      this.updateCurrentChar_(e,'currentChar');
+      this.updateCurrentChar_(e,code => {
+        this.currentChar = code;
+        let invMaybe = findIndexOfChar(this.invSubst, code);
+        if(invMaybe !== null) { this.currentInvChar = invMaybe; }
+      });
     },
     updateCurrentInvChar(e) {
-      this.updateCurrentChar_(e,'currentInvChar');
+      this.updateCurrentChar_(e, code => {
+        this.currentInvChar = code
+        let invMaybe = findIndexOfChar(this.subst, code);
+        if(invMaybe !== null) { this.currentChar = invMaybe; }
+      });
     }
   }
 }
@@ -128,7 +150,7 @@ a {
 }
 
 .currentInvChar {
-  color: green;
+  color: blue;
   font-weight: bold;
 }
 

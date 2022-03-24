@@ -1,16 +1,19 @@
 <template>
   <div id="app">
-    <HelloWorld/>
+    <ChrystoMono/>
+    <ChrystoVigenere/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import ChrystoMono from './components/ChrystoMono'
+import ChrystoVigenere from "./components/ChrystoVigenere";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    ChrystoMono,
+    ChrystoVigenere,
   }
 }
 </script>

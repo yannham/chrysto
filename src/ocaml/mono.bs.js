@@ -54,6 +54,10 @@ function subst_from_key(key) {
   return $$Buffer.contents(buffer);
 }
 
+function key_of_subst(subst) {
+  return subst;
+}
+
 function encode_char(subst, c) {
   if (Utils$Chrysto.is_uppercase(c)) {
     var i = Utils$Chrysto.index(Char.lowercase_ascii(c));
@@ -64,7 +68,7 @@ function encode_char(subst, c) {
           RE_EXN_ID: "Assert_failure",
           _1: [
             "mono.ml",
-            37,
+            39,
             16
           ],
           Error: new Error()
@@ -97,6 +101,7 @@ function decode(subst, source) {
 
 export {
   subst_from_key ,
+  key_of_subst ,
   inv ,
   encode ,
   encode_char ,
