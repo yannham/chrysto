@@ -2,14 +2,14 @@
   <table class="correspondance-table">
     <thead>
       <tr>
-        <td></td>
-        <td v-for="i in 26" :key="i" :class="{currentKeyChar: currentKeyChar === (i-1)}">{{ String.fromCharCode(64 + i) }}</td>
+        <th></th>
+        <th v-for="i in 26" :key="i" :class="{currentKeyChar: currentKeyChar === (i-1)}">{{ String.fromCharCode(64 + i) }}</th>
       </tr>
     </thead>
     <tbody>
-    <tr v-for="i in 26">
-      <td :class="{currentCipherChar: currentCipherRow === (i-1)}">{{ String.fromCharCode(65 + i - 1)}}</td>
-      <td v-for="j in 26" :key="j + i*26" :class="{currentClearChar: currentClearRow === (i-1) && currentClearCol === (j-1)}">{{ String.fromCharCode(65 + ((i + j - 2) % 26))}}</td>
+    <tr v-for="i in 26" :class="{selectedLine: currentRow === (i-1)}">
+      <th :class="{currentCipherChar: currentRow === (i-1)}">{{ String.fromCharCode(65 + i - 1)}}</th>
+      <td v-for="j in 26" :key="j + i*26" :class="{currentClearChar: currentRow === (i-1) && currentCipherCol === (j-1), selectedLine: currentCipherCol === (j-1)}">{{ String.fromCharCode(65 + ((i + j - 2) % 26))}}</td>
     </tr>
     </tbody>
   </table>
@@ -39,30 +39,17 @@
           },
         },
         computed: {
-          currentClearCol() {
-              return this.currentKeyChar;
+          currentCipherCol() {
+            return this.currentKeyChar;
           },
-          currentClearRow() {
-            console.log(this.currentChar);
-            console.log(this.currentKeyChar);
-
+          currentRow() {
             if(this.currentChar.type === 'clear') {
-              console.log("Returningg" + (((26 - this.currentKeyChar) + this.currentChar.index) % 26));
+              return this.currentChar.index;
+            }
+            else {
               return (((26 - this.currentKeyChar) + this.currentChar.index) % 26);
             }
-            else {
-              console.log("Returninggg" + this.currentChar.index);
-              return this.currentChar.index;
-            }
           },
-          currentCipherRow() {
-            if(this.currentChar.type === 'cipher') {
-              return this.currentChar.index;
-            }
-            else {
-              return this.currentClearRow;
-            }
-          }
         }
     }
 </script>
@@ -86,5 +73,34 @@
   .currentCipherChar {
     color: violet;
     font-weight: bold;
+  }
+
+  .selectedLine {
+    background-color: #e9ecef;
+  }
+
+  table {
+    margin-bottom: 1rem;
+    letter-spacing: 0.7rem;
+    line-height: 1.3rem;
+    color: #212529;
+  }
+
+  table th,
+  table td {
+    padding: 0.10rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+  }
+
+  table tbody th {
+    padding-right: 1rem;
+  }
+
+  table thead th {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
   }
 </style>
