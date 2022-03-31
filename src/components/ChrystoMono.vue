@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+    <h1 class="h1">Le chiffre de César</h1>
+    <hr>
     <div class="row mt-5">
       <div class="col"></div>
       <div class="col">
@@ -7,6 +9,9 @@
         <input id="key" v-model="secretKey">
       </div>
     </div>
+    <br><br>
+    <h2 class="h2">Chiffrer</h2>
+    <hr>
     <div class="row mt-5">
       <div class="col">
         <table class="correspondance-table">
@@ -27,6 +32,9 @@
           <input id="crypted" readonly :value="cipherText">
         </div>
     </div>
+    <br><br>
+    <h2 class="h2">Déchiffrer</h2>
+    <hr>
     <div class="row mt-5">
       <div class="col">
         <table class="correspondance-table">
@@ -153,5 +161,6 @@ a {
   color: blue;
   font-weight: bold;
 }
+
 
 </style>

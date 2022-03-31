@@ -8,8 +8,14 @@
     </thead>
     <tbody>
     <tr v-for="i in 26" :class="{selectedLine: currentRow === (i-1)}">
-      <th :class="{currentCipherChar: currentRow === (i-1)}">{{ String.fromCharCode(65 + i - 1)}}</th>
-      <td v-for="j in 26" :key="j + i*26" :class="{currentClearChar: currentRow === (i-1) && currentCipherCol === (j-1), selectedLine: currentCipherCol === (j-1)}">{{ String.fromCharCode(65 + ((i + j - 2) % 26))}}</td>
+      <th :class="{currentClearChar: currentRow === (i-1)}">{{ String.fromCharCode(65 + i - 1)}}</th>
+      <td v-for="j in 26" :key="j + i*26" :class="{
+        inactiveChar: !isCurrentCipherChar(i,j),
+        currentCipherChar: isCurrentCipherChar(i,j),
+        selectedLine: currentCipherCol === (j-1)
+      }">
+        {{ String.fromCharCode(65 + ((i + j - 2) % 26))}}
+      </td>
     </tr>
     </tbody>
   </table>
@@ -50,6 +56,11 @@
               return (((26 - this.currentKeyChar) + this.currentChar.index) % 26);
             }
           },
+        },
+        methods: {
+          isCurrentCipherChar(i, j) {
+            return this.currentRow === (i-1) && this.currentCipherCol === (j-1);
+          }
         }
     }
 </script>
@@ -66,18 +77,23 @@
   }
 
   .currentClearChar {
-    color: blue;
+    color: violet;
     font-weight: bold;
   }
 
   .currentCipherChar {
-    color: violet;
+    color: blue;
     font-weight: bold;
   }
 
   .selectedLine {
     background-color: #e9ecef;
   }
+
+  .inactiveChar {
+    color: grey;
+  }
+
 
   table {
     margin-bottom: 1rem;

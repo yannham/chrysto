@@ -4,12 +4,26 @@ import Vue from 'vue'
 import App from './App'
 import "bootstrap"
 import "bootstrap/dist/css/bootstrap.min.css"
+import ChrystoMono from "./components/ChrystoMono";
+import ChrystoVigenere from "./components/ChrystoVigenere"
 
 Vue.config.productionTip = false
 
-/* eslint-disable no-new */
+const routes = {
+  '/': ChrystoMono,
+  '/cesar': ChrystoMono,
+  '/vigenere': ChrystoVigenere,
+};
+
 new Vue({
   el: '#app',
-  components: { App },
-  template: '<App/>'
-})
+  data: {
+    currentRoute: window.location.pathname
+  },
+  computed: {
+    ViewComponent () {
+      return routes[this.currentRoute] || NotFound
+    }
+  },
+  render (h) { return h(this.ViewComponent) }
+});

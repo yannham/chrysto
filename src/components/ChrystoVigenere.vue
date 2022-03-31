@@ -1,10 +1,20 @@
 <template>
   <div class="container">
+    <h1 class="h1">Le carré de Vigenère</h1>
+    <hr>
     <div class="row mt-5">
       <div class="col"></div>
       <div class="col">
         <label for="key">Clé secrète</label>
         <input id="key" v-model="secretKey">
+      </div>
+      <div class="col">
+        <input type="radio" id="mode-encrypt" value="encrypt" v-model="mode">
+        <label for="mode-encrypt">Chiffrer</label>
+        <br>
+        <input type="radio" id="mode-decrypt" value="decrypt" v-model="mode">
+        <label for="decrypt">Déchiffrer</label>
+        <br>
       </div>
     </div>
     <div class="row mt-5">
@@ -12,19 +22,37 @@
         <KeyTable :current-char="currentChar" :current-key-char="currentKeyChar"></KeyTable>
       </div>
       <div class="col">
-        <div class="row">
+        <div class="row" v-if="mode === 'encrypt'">
           <div class="col-12">
-            <label for="clear">Texte clair</label>
-            <input id="clear" v-on:keyup="updateCurrentClearChar" v-model="clearText"/><br>
-            <label for="crypted">Texte chiffré</label>
-            <input id="crypted" readonly :value="cipherText">
+            <label for="clear-input">Texte clair</label>
+            <br>
+            <textarea id="clear-input" rows="10" class="w-100" v-on:keyup="updateCurrentClearChar" v-model="clearText"/><br>
+            <hr>
           </div>
           <div class="col-12">
-          <label for="clear">Texte chiffré</label>
-          <input id="clear" v-on:keyup="updateCurrentCipherChar" v-model="invCipherText"/><br>
-          <label for="crypted">Texte clair</label>
-          <input id="crypted" readonly :value="invClearText">
+            <label for="crypted-output">Texte chiffré</label>
+            <br>
+            <textarea id="crypted-output" rows="10" class="w-100" readonly :value="cipherText"/>
+          </div>
         </div>
+        <div class="row" v-else>
+          <div class="col-12">
+            <label for="crypted-input">Rappel: précédent chiffré</label>
+            <br>
+            <textarea id="crypted-input" rows="4" class="w-100" readonly :value="cipherText"/><br>
+            <hr>
+          </div>
+          <div class="col-12">
+            <label for="crypted-input">Texte chiffré</label>
+            <br>
+            <textarea id="crypted-input" rows="7" class="w-100" v-on:keyup="updateCurrentCipherChar" v-model="invCipherText"/><br>
+            <hr>
+          </div>
+          <div class="col-12">
+            <label for="clear-outpout">Texte clair</label>
+            <br>
+            <textarea id="clear-outpout" rows="7" class="w-100" readonly :value="invClearText"/>
+          </div>
         </div>
       </div>
     </div>
@@ -49,6 +77,7 @@ export default {
         type: 'clear',
         index: 0,
       },
+      mode: 'encrypt',
     }
   },
   computed: {
@@ -58,18 +87,21 @@ export default {
     invClearText() {
       return Vigenere.decode(this.key, this.invCipherText)
     },
+    keyOnlyLetters() {
+      return this.secretKey.replaceAll(/[^A-Za-z]/g, "");
+    },
     key() {
-      return Vigenere.key_from_string(this.secretKey)
+      return Vigenere.key_from_string(this.keyOnlyLetters)
     },
     currentKeyChar() {
-      if(this.secretKey.length === 0
+      if(this.keyOnlyLetters.length === 0
         || (this.currentChar.type === 'clear' && this.clearText.length === 0)
         || (this.currentChar.type === 'cipher' && this.invCipherText.length === 0)) {
         return 0;
       }
 
       const index = this.currentChar.type === 'clear' ? this.clearText.length-1 : this.invCipherText.length-1;
-      return this.charIndex(this.secretKey.charCodeAt(index % this.secretKey.length));
+      return this.charIndex(this.keyOnlyLetters.charCodeAt(index % this.keyOnlyLetters.length));
     }
   },
   components: {
@@ -107,14 +139,4 @@ export default {
 </script>
 
 <style scoped>
-.currentChar {
-  color: red;
-  font-weight: bold;
-}
-
-.currentInvChar {
-  color: blue;
-  font-weight: bold;
-}
-
 </style>
